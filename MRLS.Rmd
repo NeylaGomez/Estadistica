@@ -1,0 +1,201 @@
+---
+title: "Modelo de Regresión lineal simple"
+author: "PAULINA NEYLA GOMEZ CERVANTES"
+date: "2023-11-15"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+instalamos la paqueteria con: *install.packages("readxl")*
+
+```{r}
+install.packages("readxl")
+```
+
+Abrimos la paqueteria con: *library(readxl)*
+
+```{r}
+library(readxl)
+```
+
+
+**Lectura de matriz de datos**
+
+Se exoporta la matriz de penguins con el siguiente comando: *penguins<-read_excel("penguins.xlsx")
+
+```{r}
+penguins<-read_excel("penguins.xlsx")
+```
+
+Se explora los datos de la matriz con :**dim(penguins)**
+
+```{r}
+dim(penguins)
+```
+
+Para poder visualizar los tipos de variables utilizamos: **str(penguins)**
+
+```{r}
+str(penguins)
+```
+
+Para ver el nombre de las columnas escribimos: **colnames(penguins)**
+
+```{r}
+colnames(penguins)
+```
+
+Para buscar datos perdidos en la base de datos vamos a utilizar: **anyNA(penguins)**
+
+```{r}
+anyNA(penguins)
+```
+
+**Configuracion de matriz**
+
+Convertir las variables categóticas a factores
+
+```{r}
+penguins$especie<-factor(penguins$especie, 
+                         levels=c("Adelie", "Gentoo", "Chinstrap"))
+
+
+penguins$isla<-factor(penguins$isla, 
+                      levels=c("Torgersen", "Biscoe", "Dream"))
+
+
+penguins$genero<-factor(penguins$genero, 
+                        levels=c("male", "female"))
+
+penguins$año<-factor(penguins$año, 
+                     levels=c("2007", "2008", "2009"))
+```
+
+**Selección de variables**
+
+Se seleccionaran los datos de la especie gentoo y se crea una nueva matriz llamada "gentoo"
+
+Seleccion de la especie Gentoo
+
+```{r}
+penguins$especie
+gentoo<-penguins[153:176,c(4,5,6,7)]
+```
+
+**Grafico de dispersion**
+
+Generamos el gráfico de dispersión con el siguiente comando.
+
+```{r}
+pairs(gentoo)
+```
+
+**Calculo de la correlación de Pearson**
+
+Instalación de paqueteria **ggplot2**
+
+```{r}
+install.packages("ggplot2")
+```
+
+Abrimos la paqueteria 
+
+```{r}
+library("ggplot2")
+```
+
+
+
+```{r}
+cor(gentoo)
+```
+
+**Gráfico de dispersion con linea de regresion**
+
+Instalación de paqueteria **ggplot2**
+
+```{r}
+install.packages("ggplot2")
+```
+
+Abrimos la paqueteria
+
+```{r}
+library("ggplot2")
+```
+
+Creamos un objeto llamado _MRL_
+
+```{r}
+MRL<-ggplot(gentoo, aes(x=masa_corporal_g, y=largo_pico_mm))+
+  geom_point()+
+  geom_smooth(method = "lm", formula=y~x, col="dodgerblue1")+
+  ggtitle("Modelo de Regresión Lineal Simple")+
+  xlab("Masa corporal (gr)")+
+  ylab("Largo del pico (mm)")+
+  theme_light()
+```
+
+Mostramos el objeto
+
+```{r}
+MRL
+```
+
+Creamos un objeto llamado _MRL2_
+
+```{r}
+MRL2<-ggplot(gentoo, aes(x=largo_aleta_mm, y=grosor_pico_mm))+
+  geom_point()+
+  geom_smooth(method = "lm", formula=y~x, col="orange")+
+  ggtitle("Modelo de Regresión Lineal Simple")+
+  xlab("Masa corporal (gr)")+
+  ylab("Largo del pico (mm)")+
+  theme_light()
+```
+
+Mostramos el objeto 
+
+```{r}
+MRL2
+```
+
+Cálculo y representación de la recta por mínimos cuadrados.
+
+Con la función _lm_se calcularán datos como: el intercepto, el error, el valor crítico, p-valor, entre otros.
+
+Primer modelo se ocupan las varibales largo de pico y  masa corporal.
+
+```{r}
+regresion<-lm(gentoo$largo_pico_mm~gentoo$masa_corporal_g, 
+              data=gentoo)
+```
+
+Se visualiza el objeto
+
+```{r}
+summary(regresion)
+```
+
+**Coeficiente de Correlacion de Pearson (r)**
+
+Del largo del pico y la masa corporal
+
+Se crea el objeto y se visualiza
+```{r}
+r1<- sqrt(0.5456)
+r1
+```
+
+Del largo de la aleta y el grosor del pico
+
+Se crea el objeto y se visualiza
+
+```{r}
+r2<-sqrt(0.4805)
+r2
+```
+
